@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MPI Teater Tradisional Indonesia</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{min-height:100%;margin:0}
+body{font-family:Georgia,'Times New Roman',serif;background:linear-gradient(160deg,#0b3a8c,#1d6fd8 55%,#5ab0ff);color:#0b2a5c;background-attachment:fixed}
+h1,h2,h3,.btn{font-family:'Trebuchet MS','Segoe UI',sans-serif}
+.card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 6px 24px rgba(5,30,80,.25)}
+.btn{background:#1556c0;color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;transition:transform .15s,background .15s}
+.btn:hover:not(:disabled){background:#0b3a8c;transform:translateY(-2px)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.alt{background:#e6f0ff;color:#0b3a8c}.btn.alt:hover:not(:disabled){background:#cfe2ff}
+.btn.on{background:#f5b800;color:#2a1a00}
+.big{display:block;width:100%;margin:8px 0;padding:16px;font-size:1.1rem;text-align:left}
+.tk{border:2px dashed #9bbcf0;background:#fff;border-radius:8px;padding:2px 8px;margin:2px;font:inherit;cursor:pointer}
+.tk.sel{background:#f5b800;border-style:solid;border-color:#b98700}
+.blank{display:inline-block;min-width:110px;border-bottom:3px solid #1556c0;text-align:center;font-weight:700;color:#1556c0;padding:0 6px}
+.chip{display:inline-block;background:#e6f0ff;border:2px solid #1556c0;border-radius:999px;padding:6px 14px;margin:4px;cursor:grab;font-weight:700}
+.ttl{animation:rise 1s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes rise{from{opacity:0;transform:translateY(40px) scale(.9)}to{opacity:1;transform:none}}
+#home{position:fixed;left:10px;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:20}
+.scr{max-width:760px;margin:0 auto;padding:64px 14px 40px}
+.cert{border:8px double #f5b800;background:#fffdf3;text-align:center;padding:28px 16px}
+@media (prefers-reduced-motion:reduce){.ttl{animation:none}}
+@media print{.noprint{display:none!important}body{background:#fff}}
+</style>
+</head>
+<body>
+<button id="home" class="btn noprint hidden" onclick="show('beranda')">🏠 HOME</button>
+
+<!-- SPLASH -->
+<section id="splash" class="scr text-center" style="max-width:none;min-height:100dvh;padding:5vh 14px 24px;background-size:cover;background-position:center;color:#0b3a8c">
+  <div class="mx-auto" style="max-width:520px">
+    <div class="ttl" style="background:rgba(255,250,235,.9);border-radius:20px;padding:16px 20px;box-shadow:0 6px 24px rgba(5,30,80,.3)">
+      <div style="font-size:56px">🎭</div>
+      <h1 class="font-black" style="font-size:clamp(2rem,7vw,3.4rem);line-height:1.05;margin:6px 0">Teater Tradisional<br>Indonesia</h1>
+      <p style="font-size:1.05rem">Media Pembelajaran Interaktif · Seni Budaya · Kelas XI</p>
+    </div>
+    <div class="card mt-5 text-left" style="animation:rise 1s .5s both">
+      <label for="nama" class="font-bold">Nama lengkap:</label>
+      <input id="nama" type="text" maxlength="40" autocomplete="off" placeholder="Nama lengkap siswa" class="w-full mt-1 mb-3 p-3 rounded-xl border-2 border-blue-300 text-lg" style="color:#0b2a5c">
+      <label for="kelas" class="font-bold">Kelas:</label>
+      <input id="kelas" type="text" maxlength="20" autocomplete="off" placeholder="Contoh: XI IPS 2" class="w-full mt-1 p-3 rounded-xl border-2 border-blue-300 text-lg" style="color:#0b2a5c">
+      <p id="nerr" class="text-red-600 text-sm mt-1 hidden">Nama dan kelas harus diisi dulu.</p>
+      <button class="btn w-full mt-4 text-xl" onclick="start()">MULAI</button>
+    </div>
+    <p class="mt-5 text-sm inline-block px-3 py-1 rounded-full" style="background:rgba(255,250,235,.9)">Pengembang: Eneng Yuyun Nadiah, S.Pd. · 2026</p>
+  </div>
+</section>
+
+<!-- BERANDA -->
+<section id="beranda" class="scr hidden">
+  <div class="card">
+    <h2 class="text-2xl font-black">Halo, <span id="hn"></span>! 👋</h2>
+    <p class="mt-2">Hari ini kamu akan mengenal teater tradisional Indonesia: teater rakyat yang lahir dari daerah-daerah di Nusantara. <b>Tujuan belajar:</b> siswa dapat mengidentifikasi ciri, jenis, dan asal daerah teater tradisional Indonesia.</p>
+  </div>
+  <div id="stage" class="mt-4 flex items-center justify-center" style="min-height:460px;border-radius:18px;background-size:cover;background-position:center;box-shadow:0 6px 24px rgba(5,30,80,.25)"><div style="width:min(62%,300px)">
+    <button class="btn big" style="padding:11px 14px;margin:6px 0;font-size:1rem" onclick="show('beranda')">🏡 BERANDA</button>
+    <button class="btn big" style="padding:11px 14px;margin:6px 0;font-size:1rem" onclick="mat('Pengertian');show('materi')">📖 MATERI</button>
+    <button class="btn big" style="padding:11px 14px;margin:6px 0;font-size:1rem" onclick="simStart()">📝 SIMULASI</button>
+    <button class="btn big" style="padding:11px 14px;margin:6px 0;font-size:1rem" onclick="kuisMenu();show('kuis')">🎮 KUIS</button>
+  </div></div>
+  <div class="card mt-4">
+    <h3 class="font-bold text-lg">⚙️ Pengaturan</h3>
+    <div class="flex items-center gap-3 mt-2 flex-wrap">
+      <button id="mt" class="btn on" onclick="togM()">🎵 Musik: ON</button>
+      <label class="flex items-center gap-2">Volume <input id="vl" type="range" min="0" max="1" step=".05" value=".5" oninput="setV(this.value)"></label>
+    </div>
+  </div>
+  <p class="text-center text-white text-sm mt-6">Pengembang: Eneng Yuyun Nadiah, S.Pd. · 2026</p>
+</section>
+
+<!-- MATERI -->
+<section id="materi" class="scr hidden">
+  <h2 class="text-white text-2xl font-black mb-3">📖 Materi</h2>
+  <div id="tabs" class="flex gap-2 flex-wrap mb-3"></div>
+  <div id="mbody" class="card"></div>
+</section>
+
+<!-- KUIS -->
+<section id="kuis" class="scr hidden">
+  <h2 class="text-white text-2xl font-black mb-3">🎮 Kuis</h2>
+  <div id="kb" class="card"></div>
+</section>
+
+<!-- SIMULASI -->
+<section id="sim" class="scr hidden">
+  <h2 class="text-white text-2xl font-black mb-3">📝 Simulasi <span id="sn" class="text-base"></span></h2>
+  <div id="sb" class="card"></div>
+</section>
+
+<!-- SERTIFIKAT -->
+<section id="sert" class="scr hidden">
+  <div class="cert card">
+    <div style="font-size:48px">🏆</div>
+    <h2 class="text-3xl font-black">SERTIFIKAT PENCAPAIAN</h2>
+    <p class="mt-3">Diberikan kepada</p>
+    <p id="cn" class="text-3xl font-black my-2" style="color:#1556c0"></p><p id="ck" class="font-bold"></p>
+    <p>yang telah menyelesaikan simulasi <b>Teater Tradisional Indonesia</b><br>Seni Budaya Kelas XI dengan nilai</p>
+    <p id="cs" class="text-5xl font-black my-2" style="color:#d99a00"></p>
+    <p id="cd" class="text-sm"></p>
+    <p class="mt-4 text-sm">Pengembang: Eneng Yuyun Nadiah, S.Pd. · 2026</p>
+  </div>
+  <div class="flex gap-2 justify-center mt-4 noprint">
+    <button class="btn on" onclick="dlPdf()">⬇️ Unduh PDF</button>
+    <button class="btn" onclick="window.print()">🖨️ Cetak</button>
+    <button class="btn alt" onclick="show('beranda')">Ke Beranda</button>
+  </div>
+</section>
+
+<script>
+const $=i=>document.getElementById(i),R=a=>a[Math.random()*a.length|0],sh=a=>[...a].sort(()=>Math.random()-.5);
+let nm='',kl='';
+/* ===== Konfigurasi nilai: isi dengan URL web app (mis. Google Apps Script) milik guru ===== */
+const SHEET_URL='';
+/* ===== Audio (berkas di assets/sound) ===== */
+let mus=true,vol=.5;
+const A=n=>{const x=new Audio('assets/sound/'+n);x.preload='auto';return x};
+const sClick=A('click.wav'),sOk=A('benar.wav'),sBad=A('salah.wav'),bgm=A('backsound.wav');bgm.loop=true;
+function sfx(a){try{const c=a.cloneNode();c.volume=vol;c.play().catch(()=>{})}catch(e){}}
+const ok=()=>sfx(sOk),bad=()=>sfx(sBad);
+function initA(){bgm.volume=vol*.5}
+function startM(){if(mus){bgm.volume=vol*.5;bgm.play().catch(()=>{})}}
+function togM(){mus=!mus;$('mt').textContent='🎵 Musik: '+(mus?'ON':'OFF');$('mt').classList.toggle('on',mus);mus?startM():bgm.pause()}
+function setV(v){vol=+v;bgm.volume=vol*.5}
+document.addEventListener('click',e=>{if(e.target.closest('.btn,.tk,.chip'))sfx(sClick)});
+/* ===== Navigasi ===== */
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.add('hidden'));$(id).classList.remove('hidden');$('home').classList.toggle('hidden',id=='splash');scrollTo(0,0)}
+function start(){const v=$('nama').value.trim(),k=$('kelas').value.trim();if(!v||!k){$('nerr').classList.remove('hidden');return}nm=v;kl=k;$('hn').textContent=v;initA();startM();show('beranda')}
+$('nama').addEventListener('keydown',e=>{if(e.key=='Enter')$('kelas').focus()});$('kelas').addEventListener('keydown',e=>{if(e.key=='Enter')start()});
+/* ===== Data ===== */
+const F=[
+{n:'Ketoprak',d:'Yogyakarta',c:'mengangkat kisah sejarah dan legenda Jawa dengan iringan gamelan'},
+{n:'Ludruk',d:'Jawa Timur',c:'dialog jenaka, kidungan, dan pemeran wanita dimainkan oleh pria'},
+{n:'Wayang Orang',d:'Surakarta (Jawa Tengah)',c:'wayang yang diperankan manusia dengan lakon Ramayana dan Mahabharata'},
+{n:'Lenong',d:'Betawi (Jakarta)',c:'lawakan cerita rakyat Betawi diiringi gambang kromong'},
+{n:'Randai',d:'Minangkabau (Sumatera Barat)',c:'paduan silat, tari, dan nyanyi dibawakan dalam formasi lingkaran'},
+{n:'Arja',d:'Bali',c:'drama tari-opera dengan dialog berupa tembang'},
+{n:'Mamanda',d:'Kalimantan Selatan',c:'cerita kerajaan dengan tokoh Mamanda dan dialog spontan'},
+{n:'Makyong',d:'Kepulauan Riau',c:'drama tari dengan tokoh raja dan putri diiringi rebab'},
+{n:'Dulmuluk',d:'Sumatera Selatan',c:'kisah Abdul Muluk yang dibawakan dengan dialog bersyair'},
+{n:'Longser',d:'Jawa Barat',c:'pertunjukan rakyat penuh humor dan kritik sosial'},
+{n:'Kemidi Rudat',d:'Lombok (NTB)',c:'drama musik dengan busana dan nuansa pengaruh Timur Tengah'},
+{n:'Ubrug',d:'Banten',c:'teater rakyat penuh lawakan dan improvisasi'}];
+const T={
+Pengertian:()=>`<h3 class="font-black text-xl mb-2">Apa itu teater tradisional?</h3><p>Teater tradisional Indonesia adalah seni pertunjukan yang lahir, tumbuh, dan diwariskan turun-temurun di tengah masyarakat daerah. Pertunjukannya memuat adat, hiburan, dan pesan moral dengan bahasa serta musik setempat.</p>`,
+Ciri:()=>{const c=['Bersifat kedaerahan: memakai bahasa, adat, dan cerita daerahnya.','Spontan: dialog sering diimprovisasi, tidak dihafal kata demi kata.','Sederhana: panggung, tata busana, dan tata cahaya tidak rumit.','Diiringi musik daerah, misalnya gamelan atau gambang kromong.','Mengandung humor dan sindiran sosial.','Dekat dengan penonton, bahkan sering berinteraksi langsung.'];return`<h3 class="font-black text-xl mb-2">Ciri-ciri (klik untuk membuka)</h3>`+c.map((t,i)=>`<button class="btn alt big" onclick="this.outerHTML='<div class=&quot;p-3 mb-2 rounded-xl bg-blue-50&quot;>${t}</div>'">Ciri ke-${i+1}</button>`).join('')},
+Jenis:()=>`<div style="background:linear-gradient(rgba(4,20,64,.68),rgba(4,20,64,.68)),url(${BG}) center/cover;border-radius:14px;padding:16px;min-height:420px;color:#fff"><h3 class="font-black text-xl mb-2">Jenis dan asal daerah (klik namanya)</h3><div class="flex flex-wrap gap-2">${F.map((f,i)=>`<button class="btn alt" onclick="jn(${i})">${f.n}</button>`).join('')}</div><div id="jd" class="mt-3 p-3 rounded-xl" style="background:rgba(255,255,255,.93);color:#0b2a5c">Pilih salah satu teater di atas.</div></div>`,
+Unsur:()=>{const u=[['Naskah/lakon','cerita yang dipentaskan'],['Pemain','pelaku yang memerankan tokoh'],['Sutradara/pemimpin','pengatur jalannya pertunjukan'],['Panggung dan tata artistik','tempat, busana, rias, properti'],['Musik pengiring','alat musik dan nyanyian daerah'],['Penonton','bagian dari suasana pertunjukan']];return`<h3 class="font-black text-xl mb-2">Unsur pementasan</h3>`+u.map(x=>`<p class="mb-2"><b>${x[0]}</b>: ${x[1]}.</p>`).join('')}};
+function mat(k){$('tabs').innerHTML=Object.keys(T).map(t=>`<button class="btn ${t==k?'on':''}" onclick="mat('${t}')">${t}</button>`).join('');$('mbody').innerHTML=T[k]()}
+const BG='assets/images/latar-materi-jenis.jpg';
+const BGH='assets/images/latar-menu-utama.jpg';
+$('stage').style.backgroundImage=`url(${BGH})`;
+const BGS='assets/images/latar-splash.jpg';
+$('splash').style.backgroundImage=`url(${BGS})`;
+const IMG={Ketoprak:'assets/images/teater-ketoprak.jpg','Ubrug':'assets/images/teater-ubrug.jpg','Kemidi Rudat':'assets/images/teater-kemidi-rudat.jpg','Longser':'assets/images/teater-longser.jpg','Dulmuluk':'assets/images/teater-dulmuluk.jpg','Makyong':'assets/images/teater-makyong.jpg','Mamanda':'assets/images/teater-mamanda.jpg','Arja':'assets/images/teater-arja.jpg','Randai':'assets/images/teater-randai.jpg','Lenong':'assets/images/teater-lenong.jpg','Wayang Orang':'assets/images/teater-wayang-orang.jpg','Ludruk':'assets/images/teater-ludruk.jpg'};
+function jn(i){const f=F[i];$('jd').innerHTML=`<b>${f.n}</b> berasal dari <b>${f.d}</b>. Ciri: ${f.c}.`+(IMG[f.n]?`<img src="${IMG[f.n]}" alt="Pementasan ${f.n}" class="w-full rounded-xl mt-3"><p class="text-sm mt-1">Pementasan ${f.n} dari ${f.d}.</p>`:'')}
+/* ===== Kuis ===== */
+const GN=['Tebak Daerah','Benar atau Salah','Tebak Ciri','Isi Kata'];let prog=[0,0,0,0],G,L,Q,qi,sc;
+function kuisMenu(){$('kb').innerHTML=GN.map((n,i)=>`<button class="btn big" onclick="lvl(${i})">🎭 ${n}</button>`).join('')}
+function lvl(g){G=g;$('kb').innerHTML=`<h3 class="font-black text-xl">${GN[g]}</h3><p class="mb-2 text-sm">Selesaikan level dengan skor minimal 3 dari 4 untuk membuka level berikutnya.</p>`+[1,2,3].map(l=>`<button class="btn big" ${l>prog[g]+1?'disabled':''} onclick="play(${l})">Level ${l} ${l<=prog[g]?'⭐':l>prog[g]+1?'🔒':''}</button>`).join('')+`<button class="btn alt" onclick="kuisMenu()">Kembali</button>`}
+function build(f,l){const o=F.filter(x=>x!==f);
+if(G==0)return{q:`Teater <b>${f.n}</b> berasal dari…`,o:sh([f.d,...sh(o).slice(0,3).map(x=>x.d)]),a:f.d};
+if(G==1){const t=Math.random()<.5,y=t?f.d:R(o).d;return{q:`<b>${f.n}</b> berasal dari ${y}.`,o:['Benar','Salah'],a:t?'Benar':'Salah'}}
+if(G==2)return{q:`Ciri: “${f.c}”. Teater apakah ini?`,o:sh([f.n,...sh(o).slice(0,3).map(x=>x.n)]),a:f.n};
+return{q:`Asal: ${f.d}. Ciri: ${f.c}. Ketik nama teaternya!`,t:1,a:f.n,h:l==1?f.n[0]+f.n.slice(1).replace(/[^ ]/g,'_'):l==2?f.n.replace(/[^ ]/g,'_'):''}}
+function play(l){L=l;const p=F.slice(0,[6,9,12][l-1]);Q=sh(p).slice(0,4).map(f=>build(f,l));qi=0;sc=0;ask()}
+function ask(){const q=Q[qi];let h=`<p class="text-sm mb-1">Level ${L} · Soal ${qi+1}/4 · Skor ${sc}</p><p class="text-lg mb-3">${q.q}</p>`;
+if(q.t)h+=`${q.h?`<p class="font-bold tracking-widest mb-2">Petunjuk: ${q.h}</p>`:''}<input id="ti" autocomplete="off" class="w-full p-3 rounded-xl border-2 border-blue-300 mb-2" placeholder="Ketik jawabanmu"><button class="btn" onclick="ans($('ti').value)">Periksa</button>`;
+else h+=q.o.map((o,i)=>`<button class="btn alt big" onclick="ans(Q[qi].o[${i}])">${o}</button>`).join('');
+$('kb').innerHTML=h+`<div id="qf" class="mt-3"></div>`;if(q.t){$('ti').focus();$('ti').onkeydown=e=>{if(e.key=='Enter')ans($('ti').value)}}}
+function ans(v){const q=Q[qi];if($('qf').dataset.d)return;const r=String(v).trim().toLowerCase()==q.a.toLowerCase();$('qf').dataset.d=1;if(r){sc++;ok()}else bad();
+document.querySelectorAll('#kb .big').forEach(b=>b.disabled=true);
+$('qf').innerHTML=`<p class="font-bold ${r?'text-green-700':'text-red-600'}">${r?'Benar! 🎉':'Belum tepat. Jawaban: '+q.a}</p><button class="btn mt-2" onclick="nextQ()">${qi<3?'Lanjut':'Lihat hasil'}</button>`}
+function nextQ(){qi++;if(qi<4)return ask();const w=sc>=3;if(w)prog[G]=Math.max(prog[G],L);if(w)ok();
+$('kb').innerHTML=`<h3 class="font-black text-2xl">${w?'Level selesai! ⭐':'Coba lagi ya 💪'}</h3><p class="my-2">Skor: ${sc} dari 4</p><div class="flex gap-2 flex-wrap"><button class="btn" onclick="play(${L})">Ulangi</button><button class="btn alt" onclick="lvl(G)">Pilih level</button></div>`}
+/* ===== Simulasi ===== */
+const S=[
+{t:'d',q:'___ adalah teater tradisional Minangkabau yang memadukan silat, tari, dan nyanyi.',b:['Randai','Lenong','Arja'],a:'Randai'},
+{t:'d',q:'Lenong Betawi diiringi musik gambang ___.',b:['kromong','rebab','angklung'],a:'kromong'},
+{t:'d',q:'Dialog teater tradisional banyak bersifat ___, yaitu tidak dihafal kata demi kata.',b:['spontan','tertulis','kaku'],a:'spontan'},
+{t:'c',q:'Ludruk berasal dari daerah…',o:['Jawa Timur','Bali','Banten','Lombok'],a:'Jawa Timur'},
+{t:'c',q:'Manakah yang termasuk ciri teater tradisional?',o:['Bersifat kedaerahan dan sederhana','Memakai teknologi panggung canggih','Selalu berbahasa asing','Tidak melibatkan penonton'],a:'Bersifat kedaerahan dan sederhana'},
+{t:'c',q:'Alat musik pengiring utama Ketoprak adalah…',o:['Gamelan','Rebana','Sasando','Tifa'],a:'Gamelan'},
+{t:'c',q:'Unsur pementasan yang berisi cerita yang dimainkan disebut…',o:['Lakon/naskah','Tata rias','Penonton','Properti'],a:'Lakon/naskah'},
+{t:'m',q:'Tandai nama teater tradisional: Setiap malam warga menonton Ludruk di alun-alun.',a:['Ludruk']},
+{t:'m',q:'Tandai dua nama daerah: Ketoprak populer di Yogyakarta, sedangkan Randai tumbuh di Minangkabau.',a:['Yogyakarta','Minangkabau']},
+{t:'m',q:'Tandai dua alat musik: Pertunjukan Makyong diiringi rebab dan gendang.',a:['rebab','gendang']}];
+const TL={d:'Drag the word: seret kata ke tempat kosong (atau klik kata).',c:'Pilihan ganda: pilih satu jawaban.',m:'Mark the word: klik kata yang tepat.'};
+let si,sr,ch,sel;
+function simStart(){si=0;sr=0;show('sim');sq()}
+function sq(){const q=S[si];ch='';sel=new Set();$('sn').textContent=`(${si+1}/10)`;let h=`<p class="text-sm mb-2">${TL[q.t]}</p>`;
+if(q.t=='d'){h+=`<p class="text-lg mb-3">${q.q.replace('___','<span id="bl" class="blank" ondragover="event.preventDefault()" ondrop="put(event.dataTransfer.getData(\'text\'))">&nbsp;</span>')}</p>`+sh(q.b).map(w=>`<span class="chip" draggable="true" ondragstart="event.dataTransfer.setData('text','${w}')" onclick="put('${w}')">${w}</span>`).join('')}
+else if(q.t=='c'){h+=`<p class="text-lg mb-3">${q.q}</p>`+q.o.map((o,i)=>`<button class="btn alt big" onclick="pk(this,${i})">${o}</button>`).join('')}
+else{const [a,...b]=q.q.split(': ');h+=`<p class="mb-2">${a}:</p><p class="text-lg">${b.join(': ').split(' ').map(w=>`<button class="tk" data-w="${w.replace(/[.,]/g,'')}" onclick="tg(this)">${w}</button>`).join(' ')}</p>`}
+$('sb').innerHTML=h+`<button class="btn mt-4" onclick="sn()">${si<9?'Simpan dan lanjut':'Selesai'}</button>`}
+function put(w){ch=w;$('bl').textContent=w}
+function pk(b,i){ch=S[si].o[i];document.querySelectorAll('#sb .big').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
+function tg(b){const w=b.dataset.w;sel.has(w)?sel.delete(w):sel.add(w);b.classList.toggle('sel')}
+function sn(){const q=S[si];let r=false;if(q.t=='m')r=sel.size==q.a.length&&q.a.every(x=>sel.has(x));else r=ch==q.a;if(r)sr++;si++;si<10?sq():fin()}
+function fin(){const sk=sr*10,dt=new Date().toLocaleDateString('id-ID',{dateStyle:'long'});
+const rec={nama:nm,kelas:kl,nilai:sk,benar:sr,tanggal:dt};
+try{const a=JSON.parse(localStorage.getItem('mpi_nilai')||'[]');a.push(rec);localStorage.setItem('mpi_nilai',JSON.stringify(a))}catch(e){}
+if(SHEET_URL){try{fetch(SHEET_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(rec)}).catch(()=>{})}catch(e){}}
+$('cn').textContent=nm;$('ck').textContent='Kelas '+kl;$('cs').textContent=sk;$('cd').textContent=dt;ok();show('sert')}
+
+/* ===== Unduh sertifikat PDF ===== */
+async function dlPdf(){
+ if(!window.jspdf){alert('Pustaka PDF belum termuat. Periksa koneksi internet lalu coba lagi.');return}
+ const d=new window.jspdf.jsPDF({orientation:'landscape',unit:'mm',format:'a4'}),W=297,H=210,C={align:'center'};
+ d.setFillColor(255,253,243);d.rect(0,0,W,H,'F');
+ d.setDrawColor(245,184,0);d.setLineWidth(2.2);d.rect(10,10,W-20,H-20);d.setLineWidth(.6);d.rect(15,15,W-30,H-30);
+ d.setTextColor(11,58,140);d.setFont('times','bold');d.setFontSize(36);d.text('SERTIFIKAT PENCAPAIAN',W/2,46,C);
+ d.setFont('helvetica','normal');d.setFontSize(14);d.text('Diberikan kepada',W/2,64,C);
+ d.setTextColor(21,86,192);d.setFont('times','bolditalic');d.setFontSize(34);d.text(nm,W/2,84,{align:'center',maxWidth:240});
+ d.setFont('helvetica','bold');d.setFontSize(15);d.text('Kelas '+kl,W/2,96,C);
+ d.setTextColor(11,58,140);d.setFont('helvetica','normal');d.setFontSize(14);
+ d.text('yang telah menyelesaikan simulasi Teater Tradisional Indonesia',W/2,112,C);
+ d.text('Seni Budaya Kelas XI dengan nilai',W/2,121,C);
+ d.setTextColor(217,154,0);d.setFont('helvetica','bold');d.setFontSize(54);d.text($('cs').textContent,W/2,146,C);
+ d.setTextColor(11,58,140);d.setFont('helvetica','normal');d.setFontSize(12);d.text($('cd').textContent,W/2,162,C);
+ d.setFontSize(11);d.text('Pengembang: Eneng Yuyun Nadiah, S.Pd. · 2026',W/2,H-22,C);
+ const fn='Sertifikat_'+(nm.replace(/[^\w ]+/g,'').trim().replace(/\s+/g,'_')||'siswa')+'.pdf';
+ try{if(window.claude&&claude.use){const dl=await claude.use('downloads');if(dl){await dl.save({filename:fn,data:d.output('arraybuffer')});return}}}catch(e){if(e&&e.code=='declined')return}
+ d.save(fn)}
+</script>
+</body>
+</html>
